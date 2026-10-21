@@ -8,6 +8,12 @@
 - **Sign out** button under the header (shown when a password is set). It clears the session and goes back to login.
 - `CLAUDE.md`: project notes and rules for AI agents, including the version 2 plan.
 - `docs/ROADMAP.md`: version 2 ideas (more agentic) and how to add a feature.
+- GitHub Actions CI (`.github/workflows/tests.yml`): lint + tests on Windows and Linux, Python 3.11 and 3.12.
+
+### Changed
+- `pyproject.toml` version is now 1.5.0, matching this changelog.
+- Removed `plotly` (graphs were removed from the dashboard). Streamlit 1.60 or newer is now required.
+- The synthetic data generator creates its own folders, so tests run on a fresh clone.
 
 ## 1.4.0 – 2026-10-21 – server deployment
 
