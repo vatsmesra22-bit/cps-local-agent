@@ -1,0 +1,32 @@
+# Python / tooling
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+
+# Secrets and per-PC settings
+.env
+
+# Private WhatsApp data and generated files (keep only the README / placeholders)
+input/*
+!input/README.md
+output/*
+!output/README.md
+data/*
+!data/README.md
+logs/*
+!logs/.gitkeep
+output_synthetic/
+samples/synthetic_input/
+handover/
+
+# Editor / OS
+.vscode/
+.idea/
+Thumbs.db
+.DS_Store
+
+# Local tool settings
+.claude/

@@ -1,0 +1,82 @@
+# CSP GPS Issue Reporting – shared business rules.
+# Paths are relative to the project folder. Per-PC values can be overridden in .env.
+
+date_range:
+  start: "2026-09-22"   # inclusive, by original WhatsApp message timestamp
+  end: null             # inclusive; null = latest message date found in the inputs
+
+# WhatsApp exports carry the phone's local time without a zone. This is recorded
+# alongside every timestamp so the assumption is visible in the report.
+timezone: "Asia/Kolkata"
+
+input_dir: "input"
+output_dir: "output"
+report_name: "CSP_GPS_Issue_Report.xlsx"
+state_db: "data/state.sqlite"   # record IDs, OCR cache, manual resolution edits
+
+ocr:
+  enabled: true
+  tesseract_cmd: null           # e.g. "C:/Program Files/Tesseract-OCR/tesseract.exe"; null = auto-detect
+  languages: "eng"              # add "+hin" if the Hindi language pack is installed
+
+grouping:
+  # Images and a caption sent by the same person within this many minutes are one report.
+  bundle_minutes: 3
+
+duplicates:
+  same_csp_window_hours: 48   # same CSP + same problem reported again within this time
+  same_text_window_hours: 24
+  image_hash_max_distance: 5     # perceptual-hash distance treated as "same screenshot"
+
+# Optional: map WhatsApp sender names to a role/district. CSV with columns
+# sender,role,district  (leave missing if not needed)
+reporter_directory: "config/reporters.csv"
+
+# Dashboard branding, matched to kiosk.eko.in. Drop a logo file at dashboard/assets/logo.png
+# to show it in the header.
+brand:
+  company: "Eko Bharat Ventures"
+  product: "CSP GPS Issue Monitor"
+  primary: "#0092CC"     # Eko Kiosk blue (kiosk.eko.in)
+  accent: "#E69B1A"      # Eko Kiosk saffron
+  logo: "dashboard/assets/logo.png"
+
+# Daily automation: new WhatsApp exports saved here are copied into input/ before each run.
+auto_import:
+  watch_folder: "~/Downloads"   # default; override with CSP_WATCH_FOLDER in .env
+  patterns:
+    - "WhatsApp Chat*.zip"
+    - "*Kiosk Team Eko*.zip"
+    - "* DC.zip"              # one-to-one chats exported with a DC, e.g. "Anil Sharma DC.zip"
+  # SBI CSP Visit App reports (visits recorded in the app) go to input/visit_reports/
+  visit_report_patterns:
+    - "Visit report*.xlsx"
+    - "Visit report*.csv"
+
+# What to do for each kind of complaint (shown as "Suggested Action"). Edit freely.
+# Location steps follow the office notice in the group: CSP lat/long comes from the FIGS IT team,
+# is used for geo-fencing in the CSP Visit App and syncs hourly after it is updated on the portal.
+suggested_actions:
+  "Distance Exceeds Radius": "Confirm the DC is at the CSP. Take a GPS-camera photo at the CSP and update the exact lat/long on the portal; retry the visit after the hourly sync."
+  "Location Mismatch (Actual vs Planned)": "CSP's saved location is wrong. Update the exact lat/long from the actual CSP location on the portal; retry after the hourly sync."
+  "Location Error in Visit App": "The Visit App rejected the location. Check the CSP's saved lat/long on the portal against a GPS-camera photo at the CSP and correct it; retry after the hourly sync. Note the CSP if the visit was done offline."
+  "GPS Not Detected": "Ask the DC to switch on GPS (high accuracy), restart the app and retry at the CSP. If it still fails, send the CSP ID and screenshot to tech support (Amit singh)."
+  "CSP Location Needs Update": "Get a GPS-camera photo at the CSP and update the exact lat/long on the portal (FIGS IT data syncs hourly); then retry the visit."
+  "Lat/Long Incorrect or Unavailable": "Update the exact lat/long from the actual CSP location on the portal; retry after the hourly sync."
+  "Location Refresh/Update Failure": "Retry location refresh after restarting the app; if it fails again, raise to tech support with the screenshot."
+  "Visit Not Completed/Updated": "Ask the DC for the CSP ID, the reason and a screenshot, then route to tech support or the SBI coordinator."
+  "CSP Not in Visit App": "CSP code is not mapped in the Visit App. Ask the SBI coordinator (Ganesh) to map the CSP to the DC."
+  "App/Server Error": "App or server problem. Retry after some time; if it continues, raise to tech support with the screenshot and CSP ID."
+  "Other Location Issue": "Check the message and screenshot in WhatsApp and decide the next step."
+
+# Pending cases older than this many days are marked for follow-up / escalation.
+follow_up_after_days: 2
+escalate_after_days: 5
+
+# WhatsApp Web account lock and machine-specific paths live in .env (see .env.example).
+
+# Who the agent's ready-to-send WhatsApp drafts are addressed to (it never sends them itself).
+agent_contacts:
+  tech_support: "Amit singh"       # GPS / location / app errors
+  sbi_coordinator: "Ganesh"         # CSP mapping in the Visit App, lat/long on the portal
+  manager: "Ma'am"                  # daily summary

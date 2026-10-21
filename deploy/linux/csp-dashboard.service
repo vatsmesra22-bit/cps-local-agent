@@ -1,0 +1,14 @@
+[Unit]
+Description=CSP GPS Complaints dashboard (Streamlit)
+After=network-online.target
+
+[Service]
+User=__USER__
+WorkingDirectory=__ROOT__
+Environment=PYTHONIOENCODING=utf-8
+ExecStart=__ROOT__/.venv/bin/python -m streamlit run dashboard/app.py --server.address 0.0.0.0 --server.port 8501 --server.headless true --browser.gatherUsageStats false
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

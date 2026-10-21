@@ -1,0 +1,11 @@
+[Unit]
+Description=CSP GPS Complaints - import new exports and rebuild the report
+
+[Service]
+Type=oneshot
+User=__USER__
+WorkingDirectory=__ROOT__
+Environment=PYTHONIOENCODING=utf-8
+ExecStart=__ROOT__/.venv/bin/python process.py --auto-import
+StandardOutput=append:__ROOT__/logs/daily.log
+StandardError=append:__ROOT__/logs/daily.log
