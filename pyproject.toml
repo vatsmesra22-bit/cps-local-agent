@@ -1,6 +1,6 @@
 [project]
 name = "csp-gps-issue-report"
-version = "1.0.0"
+version = "1.5.0"
 description = "Turns CSP visit-failure complaints from WhatsApp into an Excel report and a dashboard (Eko India Financial Services, internal)."
 readme = "README.md"
 requires-python = ">=3.10,<3.14"
@@ -8,8 +8,7 @@ dependencies = [
     "pandas>=2.1,<3",
     "openpyxl>=3.1,<4",
     "Pillow>=10.0",
-    "streamlit>=1.36,<2",
-    "plotly>=5.20,<7",
+    "streamlit>=1.60,<2",
     "ImageHash>=4.3",
     "pytesseract>=0.3.10",
     "python-dateutil>=2.8",
