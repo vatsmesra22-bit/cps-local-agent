@@ -93,6 +93,7 @@ def main() -> None:
         "01/10/2026, 11:12 am - Test DC Asha (SYNTHETIC): Current location: 25.6093, 85.1376 Planned location: 25.6150, 85.1410 CSP ID: SYN10009 refresh karne pe bhi update nahi hua",
         "03/10/2026, 5:30 pm - Test FO Ravi (SYNTHETIC): All CSP visits done today, no issues",
     ]
+    g1.mkdir(parents=True, exist_ok=True)
     (g1 / "WhatsApp Chat with [SYNTHETIC] Bihar DC Team.txt").write_text("\n".join(lines) + "\n", encoding="utf-8")
 
     # --- Group 2: iOS export, zipped (dd/mm/yy, 24h with seconds) ------------------------------
