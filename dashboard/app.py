@@ -183,6 +183,11 @@ st.markdown(f"""
   .st-key-login_btn button:hover {{filter:brightness(1.05);}}
   .st-key-login_card [data-testid="stAlert"] {{margin:0 26px;}}
   .login-foot {{text-align:center; font-size:0.78rem; color:{MUTED}; padding:0 20px;}}
+  .signed-in {{text-align:right; white-space:nowrap; font-size:0.82rem; color:{MUTED}; font-weight:600;}}
+  .st-key-logout_btn button {{border:1px solid {BORDER} !important; border-radius:10px !important; background:#fff !important;
+      color:{HEADER_BG} !important; min-height:36px;}}
+  .st-key-logout_btn button p {{color:{HEADER_BG} !important; font-weight:700 !important; white-space:nowrap;}}
+  .st-key-logout_btn button:hover {{border-color:{HEADER_BG} !important; background:#F0F7FA !important;}}
   [class*="st-key-kpi_"] {{margin-top:-6px;}}
   [class*="st-key-kpi_"] button {{border-radius:999px !important; border:1px solid {BORDER} !important;
       background:#fff !important; color:{HEADER_BG} !important; font-weight:700 !important; min-height:34px;
@@ -521,6 +526,18 @@ def header(right: str) -> None:
         <div class='small'>{html.escape(BRAND['company'])} <span class='since'>Since 2007</span></div>
         <div class='small'>CSP visits that failed in the SBI CSP Visit app</div>
         </div></div><div class='right'>{right}</div></div>""", unsafe_allow_html=True)
+    sign_out_bar()
+
+
+def sign_out_bar() -> None:
+    """'Signed in' note + Sign out button under the header (only when a dashboard password is set)."""
+    if not _expected_secret()[0]:
+        return
+    _, note, btn = st.columns([3, 2, 1.3], vertical_alignment="center")
+    note.markdown("<div class='signed-in'>🔓 Team login · signed in</div>", unsafe_allow_html=True)
+    if btn.button("⎋ Sign out", key="logout_btn", width="stretch"):
+        st.session_state.clear()
+        st.rerun()
 
 
 if not dirs:

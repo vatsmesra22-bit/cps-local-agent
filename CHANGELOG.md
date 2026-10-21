@@ -5,6 +5,7 @@
 ### Added
 - New **login page**: official Eko logo + KIOSK, "Eko Bharat Ventures · Since 2007", gold "Complaints" title,
   styled password box and button.
+- **Sign out** button under the header (shown when a password is set). It clears the session and goes back to login.
 - `CLAUDE.md`: project notes and rules for AI agents, including the version 2 plan.
 - `docs/ROADMAP.md`: version 2 ideas (more agentic) and how to add a feature.
 
