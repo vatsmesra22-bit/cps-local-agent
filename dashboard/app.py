@@ -147,6 +147,42 @@ st.markdown(f"""
       border-radius:0 !important; background:transparent !important;}}
   div[data-testid="stExpander"] summary {{padding:8px 4px !important; font-size:0.95rem;}}
   div[data-testid="stExpander"] summary:hover {{background:#FBF8F3 !important; border-radius:10px;}}
+  .st-key-login_card {{background:#fff; border:1px solid {BORDER}; border-radius:24px; overflow:hidden; padding:0 0 18px;
+      box-shadow:0 24px 60px rgba(0,85,122,0.18); animation:rise .5s ease both;}}
+  .st-key-login_card > div {{gap:0.6rem;}}
+  .login-hero {{position:relative; overflow:hidden; text-align:center; color:#fff; padding:30px 24px 26px;
+      background:linear-gradient(135deg, #00557A 0%, {HEADER_BG} 45%, #0092CC 100%);}}
+  .login-hero::before {{content:""; position:absolute; width:260px; height:260px; right:-90px; top:-120px; border-radius:50%;
+      background:radial-gradient(circle, rgba(239,184,57,0.40), transparent 65%);}}
+  .login-hero > * {{position:relative;}}
+  .login-hero .logo {{display:inline-block; padding:10px 16px; margin-bottom:12px;}}
+  .login-hero .logo img {{height:52px;}}
+  .login-hero h1 {{color:#fff; font-size:1.7rem; font-weight:800; margin:6px 0 2px; padding:0; letter-spacing:-0.5px;}}
+  .login-hero h1 span {{background:{SAFFRON_GRADIENT}; -webkit-background-clip:text; background-clip:text; color:transparent;}}
+  .login-brand {{font-size:0.92rem; font-weight:600; opacity:0.95;}}
+  .login-tag {{font-size:0.84rem; opacity:0.85;}}
+  .st-key-login_card [data-testid="stForm"] {{padding:6px 26px 0;}}
+  .login-label {{font-weight:700; color:{INK}; font-size:0.95rem; margin:6px 0 2px;}}
+  .st-key-login_card input {{font-size:1rem !important;}}
+  .st-key-login_card [data-baseweb="input"] {{border:1.5px solid {BORDER} !important; border-radius:12px !important;
+      background:#FBF8F3 !important;}}
+  .st-key-login_card [data-baseweb="input"]:focus-within {{border-color:#0092CC !important;
+      box-shadow:0 0 0 3px rgba(0,146,204,0.15);}}
+  .title-x {{color:#fff; font-weight:800; letter-spacing:-0.5px; line-height:1.15; font-size:1.75rem; margin:4px 0 2px;}}
+  .login-hero .title-x {{font-size:1.8rem; margin:8px 0 4px;}}
+  .title-x .gold {{background:{SAFFRON_GRADIENT}; -webkit-background-clip:text; background-clip:text;
+      -webkit-text-fill-color:transparent; color:transparent;}}
+  .st-key-login_card [data-testid="stTextInputRootElement"] {{border:1.5px solid {BORDER} !important; border-radius:12px !important;
+      background:#FBF8F3 !important;}}
+  .st-key-login_card [data-testid="stTextInputRootElement"]:focus-within {{border-color:#0092CC !important;
+      box-shadow:0 0 0 3px rgba(0,146,204,0.15);}}
+  .st-key-login_btn button {{background:linear-gradient(120deg, {HEADER_BG}, #0092CC) !important; color:#fff !important;
+      border:none !important; border-radius:12px !important; min-height:46px; font-weight:700 !important;
+      box-shadow:0 8px 18px rgba(0,102,143,0.25);}}
+  .st-key-login_btn button p {{color:#fff !important; font-weight:700 !important; font-size:1rem !important;}}
+  .st-key-login_btn button:hover {{filter:brightness(1.05);}}
+  .st-key-login_card [data-testid="stAlert"] {{margin:0 26px;}}
+  .login-foot {{text-align:center; font-size:0.78rem; color:{MUTED}; padding:0 20px;}}
   [class*="st-key-kpi_"] {{margin-top:-6px;}}
   [class*="st-key-kpi_"] button {{border-radius:999px !important; border:1px solid {BORDER} !important;
       background:#fff !important; color:{HEADER_BG} !important; font-weight:700 !important; min-height:34px;
@@ -426,6 +462,14 @@ def card_row(items: list[tuple]) -> None:
             if st.button("Dekho ▸", key=key, width="stretch", help=f"Open: {title}"):
                 show_list(title, frame, kind)
 
+# --- logo ----------------------------------------------------------------------------------------------
+logo = PROJECT / BRAND["logo"]
+# Official Eko logo (dashboard/assets/logo.png, transparent background); plain wordmark if the file is missing.
+logo_html = ("<div class='logo'><img src='data:image/png;base64,"
+             f"{base64.b64encode(logo.read_bytes()).decode()}' alt='eko'/><div class='sub'>KIOSK</div></div>"
+             if logo.is_file() else "<div class='logo'><div class='eko'>eko</div><div class='sub'>KIOSK</div></div>")
+
+
 # --- login ---------------------------------------------------------------------------------------------
 def _expected_secret() -> tuple[str, str]:
     """('sha256', hex) when DASHBOARD_PASSWORD_SHA256 is set, ('plain', pw) for DASHBOARD_PASSWORD, else ('', '')."""
@@ -440,20 +484,28 @@ def require_login() -> None:
     kind, secret = _expected_secret()
     if not kind or st.session_state.get("auth_ok"):
         return  # no password configured (local use) or already signed in
-    _, mid, _ = st.columns([1, 1.2, 1])
-    with mid, st.container(border=True):
-        st.markdown("<div class='box-title' style='font-size:1.3rem'>🔒 CSP GPS Complaints</div>"
-                    "<div class='box-sub'>Eko Bharat Ventures – internal dashboard. Password daaliye.</div>",
-                    unsafe_allow_html=True)
+    st.markdown("<div style='height:6vh'></div>", unsafe_allow_html=True)
+    _, mid, _ = st.columns([1, 1.25, 1])
+    with mid, st.container(key="login_card"):
+        st.markdown(
+            f"<div class='login-hero'>{logo_html}"
+            f"<div class='login-brand'>{html.escape(BRAND['company'])} <span class='since'>Since 2007</span></div>"
+            "<div class='title-x'>CSP GPS <span class='gold'>Complaints</span></div>"
+            "<div class='login-tag'>SBI CSP Visit app · failed visits, tracked and followed up</div></div>",
+            unsafe_allow_html=True)
         with st.form("login", border=False):
-            pw = st.text_input("Password", type="password")
-            ok = st.form_submit_button("Open dashboard", width="stretch")
+            st.markdown("<div class='login-label'>🔒 Team login</div>", unsafe_allow_html=True)
+            pw = st.text_input("Password", type="password", placeholder="Password daaliye",
+                               label_visibility="collapsed")
+            ok = st.form_submit_button("Open dashboard  →", width="stretch", key="login_btn")
         if ok:
             given = hashlib.sha256(pw.encode()).hexdigest() if kind == "sha256" else pw
             if hmac.compare_digest(given, secret):
                 st.session_state["auth_ok"] = True
                 st.rerun()
-            st.error("Password galat hai.")
+            st.error("Password galat hai. Dobara try kijiye.")
+        st.markdown("<div class='login-foot'>Internal use only · phone numbers hidden · data stays on Eko systems</div>",
+                    unsafe_allow_html=True)
     st.stop()
 
 
@@ -461,16 +513,11 @@ require_login()
 
 # --- header --------------------------------------------------------------------------------------------
 dirs = data_dirs()
-logo = PROJECT / BRAND["logo"]
-# Official Eko logo (dashboard/assets/logo.png, transparent background); plain wordmark if the file is missing.
-logo_html = ("<div class='logo'><img src='data:image/png;base64,"
-             f"{base64.b64encode(logo.read_bytes()).decode()}' alt='eko'/><div class='sub'>KIOSK</div></div>"
-             if logo.is_file() else "<div class='logo'><div class='eko'>eko</div><div class='sub'>KIOSK</div></div>")
 
 
 def header(right: str) -> None:
     st.markdown(f"""<div class='top'><div class='left'>{logo_html}<div class='divider'></div><div>
-        <h1>CSP GPS <span>Complaints</span></h1>
+        <div class='title-x'>CSP GPS <span class='gold'>Complaints</span></div>
         <div class='small'>{html.escape(BRAND['company'])} <span class='since'>Since 2007</span></div>
         <div class='small'>CSP visits that failed in the SBI CSP Visit app</div>
         </div></div><div class='right'>{right}</div></div>""", unsafe_allow_html=True)

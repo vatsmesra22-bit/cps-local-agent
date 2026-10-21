@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.5.0 – 2026-10-21 – branded login, v2 ready
+
+### Added
+- New **login page**: official Eko logo + KIOSK, "Eko Bharat Ventures · Since 2007", gold "Complaints" title,
+  styled password box and button.
+- `CLAUDE.md`: project notes and rules for AI agents, including the version 2 plan.
+- `docs/ROADMAP.md`: version 2 ideas (more agentic) and how to add a feature.
+
 ## 1.4.0 – 2026-10-21 – server deployment
 
 ### Added
