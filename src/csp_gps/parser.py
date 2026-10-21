@@ -312,7 +312,7 @@ def _norm(text: str) -> str:
 def attach_markdown_quotes(messages: list[Message], md_path: Path) -> tuple[str | None, int]:
     """Some exporters write a .md next to the .txt in which replies carry the message they quote:
 
-        [10:50 AM] **+91 96676 05718:**
+        [10:50 AM] **+91 98765 43210:**
         > _Sakshi Office: @~Amit singh 1A851811  GPS Issue_
         Ok
 
