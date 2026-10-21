@@ -108,7 +108,8 @@ The last command regenerates the SYNTHETIC test data.
 ├── dashboard/app.py          Streamlit dashboard (assets/ for the logo)
 ├── agent/DAILY_AGENT_TASK.md prompt for the scheduled AI agent
 ├── scripts/                  daily_update.bat, generate_synthetic_data.py
-├── deploy/                   windows/ (Task Scheduler) and linux/ (systemd) server install
+├── Dockerfile, docker-compose.yml   Docker + nginx server install (docs/DEPLOYMENT.md)
+├── deploy/                   docker/ (nginx.conf), windows/ (Task Scheduler), linux/ (systemd)
 ├── tests/                    pytest suite
 ├── docs/                     problem statement, user guide, architecture, data dictionary
 ├── input/                    WhatsApp exports and web captures (private, not committed)

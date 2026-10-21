@@ -16,6 +16,38 @@ Goal: the dashboard runs 24×7 at `http://<server>:8501`, behind a password, and
 - **First install:** use the server package zip. It carries the data collected so far.
 - **Later updates:** use `git pull`. The data folders are never touched by Git.
 
+## Docker + nginx (Linux, recommended)
+
+This runs three containers:
+- **dashboard** (Streamlit)
+- **report**: rebuilds at 10:00 and 15:00 IST from the shared folder
+- **nginx**: port 80 → dashboard, with WebSockets
+
+Data stays in `input/ output/ data/ logs/` next to `docker-compose.yml`. It is never baked into the image.
+
+```bash
+cd /opt/cps-local-agent                       # wherever the repo was cloned
+cp .env.example .env && nano .env             # DASHBOARD_PASSWORD_SHA256=..., OCR_ENABLED=true
+mkdir -p input output data logs
+sudo mkdir -p /srv/csp-exports                # shared folder the team drops exports into
+sudo chown -R 1000:1000 input output data logs
+docker compose up -d --build
+docker compose run --rm report python scripts/scheduler.py --once   # first report now
+```
+
+| Setting (in `.env` or the shell) | Default | Meaning |
+|---|---|---|
+| `CSP_EXPORTS_DIR` | `/srv/csp-exports` | Host folder with WhatsApp exports and visit reports. It is mounted read-only as `/watch`. |
+| `CSP_HTTP_PORT` | `80` | Port nginx listens on |
+| `CSP_REPORT_TIMES` | `10:00,15:00` | Report times, in `CSP_TIMEZONE` |
+| `CSP_RUN_ON_START` | `true` | Build a report as soon as the report container starts |
+| `CSP_UID` / `CSP_GID` | `1000` | User that owns the data folders on the host |
+
+- **Update the code:** run `git pull && docker compose up -d --build`. The data folders are untouched.
+- **Logs:** run `docker compose logs -f report` or `docker compose logs -f dashboard`, or look in `logs/process.log`.
+- **HTTPS:** add a `listen 443 ssl` server block with the company certificate to `deploy/docker/nginx.conf`, and
+  publish port 443 in `docker-compose.yml`.
+
 ## 1. Prerequisites (IT)
 - **Server:** Windows Server 2019+ or Linux (Ubuntu 22.04+/RHEL 8+). 2 vCPU, 4 GB RAM and 5 GB disk are enough.
 - **Python:** 3.11 or 3.12 installed. On Windows, tick *Add python.exe to PATH*.

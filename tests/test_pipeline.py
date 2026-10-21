@@ -235,3 +235,21 @@ def test_agent_brief_drafts_and_changes():
     assert support["message"].count("1A850001") == 1          # one line per CSP
     assert any(x["to"] == "@DC C" for x in b["drafts"])         # asked for the missing CSP ID
     assert b["drafts"][0]["to"] == "Ma'am"
+
+
+# --- Docker report scheduler -------------------------------------------------------------------------
+def test_scheduler_next_run():
+    from datetime import datetime
+    from zoneinfo import ZoneInfo
+
+    sys.path.insert(0, str(ROOT / "scripts"))
+    from scheduler import next_run, parse_times
+
+    times = parse_times("15:00, 10:00,10:00")
+    assert times == [(10, 0), (15, 0)]
+    ist = ZoneInfo("Asia/Kolkata")
+    assert next_run(datetime(2026, 10, 21, 9, 59, tzinfo=ist), times) == datetime(2026, 10, 21, 10, 0, tzinfo=ist)
+    assert next_run(datetime(2026, 10, 21, 10, 0, tzinfo=ist), times) == datetime(2026, 10, 21, 15, 0, tzinfo=ist)
+    assert next_run(datetime(2026, 10, 21, 16, 30, tzinfo=ist), times) == datetime(2026, 10, 22, 10, 0, tzinfo=ist)
+    with pytest.raises(ValueError):
+        parse_times("25:00")

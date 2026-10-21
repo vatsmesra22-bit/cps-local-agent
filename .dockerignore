@@ -1,0 +1,17 @@
+# Keep private data, secrets and local tooling out of the image (they are mounted at run time).
+.git
+.github
+.venv
+**/__pycache__
+.pytest_cache
+.ruff_cache
+.env
+input
+output
+output_synthetic
+data
+logs
+handover
+samples/synthetic_input
+.claude
+*.zip

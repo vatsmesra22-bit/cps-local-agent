@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.6.0 – 2026-10-21 – Docker + nginx
+
+### Added
+- `Dockerfile`, `docker-compose.yml` and `deploy/docker/nginx.conf`. Three containers:
+  - dashboard
+  - report (10:00 and 15:00 IST)
+  - nginx on port 80, with WebSockets
+- `scripts/scheduler.py`: runs `process.py --auto-import` at `CSP_REPORT_TIMES` (default `10:00,15:00`), or once with `--once`.
+- The Docker image includes Tesseract, so screenshots are read by OCR on the server (`OCR_ENABLED` in `.env`).
+
 ## 1.5.0 – 2026-10-21 – branded login, v2 ready
 
 ### Added

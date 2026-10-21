@@ -83,7 +83,8 @@ Use Python 3.11 or 3.12. Python 3.14 fails to build the venv.
 
 ## Deployment
 
-Target: the company server (rack). Windows: `deploy/windows/install_tasks.ps1`. Linux: `deploy/linux/install_services.sh`.
+Target: the company server (rack). Docker (recommended on Linux): `docker compose up -d --build` (see
+[docs/DEPLOYMENT.md](docs/DEPLOYMENT.md#docker--nginx-linux-recommended)). Windows: `deploy/windows/install_tasks.ps1`. Linux: `deploy/linux/install_services.sh`.
 Daily data reaches the server in two ways:
 - export zips and visit-report `.xlsx` files dropped into the watch folder
 - the scheduled agent
